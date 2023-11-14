@@ -1,16 +1,32 @@
 @startuml
 
-actor BusinessAdmin
-actor Operations
-entity Component
-participant "Component Implementation" as ComponentImplementation
-participant "Identity Operator" as identityOperator
-participant "Secret store" as SecretStore
-participant "Identity Management System" as IDM
+!define Swimlane1
+
+box "ODA Operations \n OAuth_client/relying party"
+    actor BusinessAdmin
+    actor Operations
+end box
+
+
+box "ODA Component"
+    entity Component
+    participant "Component Implementation" as ComponentImplementation
+end box
+box "ODA Canvas"
+    participant "Canvas Resource Inventory API"
+end box
+
+box "ODA Canvas \nAuthentication-identity \nAuthorization server"
+    participant "Identity Operator/Handler" as identityOperator
+    participant "Secret store" as SecretStore
+    participant "Identity Management System" as IDM
+end box
+
 
 
 group Bootstrap
-Component <- Operations : Install
+"Canvas Resource Inventory API" <- Operations : Install
+Component <- "Canvas Resource Inventory API" : Install
 Component -> ComponentImplementation : Install
 ComponentImplementation -> ComponentImplementation: Create Admin role
 
@@ -28,7 +44,7 @@ identityOperator -> ComponentImplementation: Register identityOperator to permis
 identityOperator -> IDM: Register component
 
 identityOperator -> ComponentImplementation : Query bootstrap Admin role
-identityOperator -> IDM: create role
+identityOperator -> IDM: create Role in IDM
 identityOperator -> IDM: Assign seccon user to Admin role
 
 end 
@@ -36,15 +52,15 @@ group Normal business operations
 
 BusinessAdmin -> Component: Create Role
 Component-> identityOperator: permissionSpecificationSetCreationNotification event
-identityOperator -> IDM: create role
+identityOperator -> IDM: create Role in IDM
 Operations->IDM  : Maintain user identities
 BusinessAdmin -> Component: Update Role
 Component-> identityOperator: permissionSpecificationSetAttributeValueChangeNotification event
-identityOperator -> IDM: Update role
+identityOperator -> IDM: Update Role in IDM
 Operations->IDM  : Maintain user identities
 BusinessAdmin -> Component: Delete Role
 Component-> identityOperator: permissionSpecificationSetDeletionNotification event
-identityOperator -> IDM: Delete role
+identityOperator -> IDM: Delete Role in IDM
 
 end
 group Uninstall
