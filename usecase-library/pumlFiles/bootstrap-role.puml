@@ -34,13 +34,14 @@ ComponentImplementation -> ComponentImplementation: Create Admin role
 group openid-connect discovery
 note right of ComponentImplementation
     The well-known DNS for  openid-connect service is set to 'openid-connect.canvas'
+    The well-known realm for ODA is set to '<realm'
 end note
-ComponentImplementation -> S1++: GET https://openid-connect.canvas/.well-known/openid-configuration
+ComponentImplementation -> S1++: GET https://openid-connect.canvas/realms/<realm>/.well-known/openid-configuration
 return openid-configuration
 end group
 
 group openid-connect dynamic client registration
-ComponentImplementation -> S1++: GET https://openid-connect.canvas/<realm>/client
+ComponentImplementation -> S1++: POST http://openid-connect.canvas/realms/<realm>/clients-registrations/openid-connect
 return client_id, client_secret
 end group
 
