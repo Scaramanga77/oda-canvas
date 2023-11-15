@@ -17,6 +17,7 @@ box "ODA Canvas"
 end box
 
 box "ODA Canvas \nAuthentication-identity \nAuthorization server"
+    participant "Canvas openid-connect" as S1
     participant "Identity Operator/Handler" as identityOperator
     participant "Secret store" as SecretStore
     participant "Identity Management System" as IDM
@@ -30,18 +31,22 @@ Component <- "Canvas Resource Inventory API" : Install
 Component -> ComponentImplementation : Install
 ComponentImplementation -> ComponentImplementation: Create Admin role
 
-Component -> identityOperator: on.create 
-identityOperator -> IDM: Create system user for component
-note right
-    This is a system-generated user (uuid) that is used then
-    the component makes API calls (to another component or
-    canvas service).
+group openid-connect discovery
+note right of ComponentImplementation
+    The well-known DNS for  openid-connect service is set to 'openid-connect.canvas'
 end note
-identityOperator <- IDM: Return clientId and secret
-identityOperator -> SecretStore: Update with clientId and secret
+ComponentImplementation -> S1++: GET https://openid-connect.canvas/.well-known/openid-configuration
+return openid-configuration
+end group
+
+group openid-connect dynamic client registration
+ComponentImplementation -> S1++: GET https://openid-connect.canvas/<realm>/client
+return client_id, client_secret
+end group
+
+Component -> identityOperator: on.create 
 
 identityOperator -> ComponentImplementation: Register identityOperator to permissionSpecificationSet events
-identityOperator -> IDM: Register component
 
 identityOperator -> ComponentImplementation : Query bootstrap Admin role
 identityOperator -> IDM: create Role in IDM
