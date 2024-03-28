@@ -1,0 +1,37 @@
+{
+    "no-restricted-patterns": ["on", {
+        "Global": [
+        "^globally restricted pattern"
+        ],
+        "Feature": [
+        "poor description"
+        ],
+        "Background": [
+        "show last response",
+        "a debugging step"
+        ],
+        "Scenario": [
+        "show last response",
+        "a debugging step"
+        ]
+    }],
+    "indentation" : [
+        "on", {
+            "Feature": 0,
+            "Background": 4,
+            "Scenario": 4,
+            "Step": 8,
+            "Examples": 0,
+            "example": 8,
+            "given": 8,
+            "when": 8,
+            "then": 8,
+            "and": 8,
+            "but": 8,
+            "feature tag": 0,
+            "scenario tag": 0
+        }
+    ],
+    "max-scenarios-per-file": ["on", {"maxScenarios": 10, "countOutlineExamples": true}],
+    "name-length" : ["on", { "Feature": 80, "Scenario": 80, "Step": 130 }]    
+}
